@@ -1,12 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import Header from "components/Documentation/Header";
-import UserContext from "../config/context";
+import UserContext from "../../config/context";
 import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import AppNavbar from "pagesComponents/AppNavbar";
+import path from "path";
 
-const Launchpad = () => {
+const launchpad = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -71,7 +72,10 @@ const Launchpad = () => {
                     <p className="text-base text-[#CCA8B4] hover:text-opacity-80">
                       For Artists
                     </p>
-                    <button className="mb-4 bg-eversnipe hover:bg-eversnipe-hover transition-colors duration-100 py-2 px-4 text-eversnipe-dark font-extrabold text-md rounded-lg">
+                    <button
+                      className="mb-4 bg-eversnipe hover:bg-eversnipe-hover transition-colors duration-100 py-2 px-4 text-eversnipe-dark font-extrabold text-md rounded-lg"
+                      onClick={() => router.push("/launchpad/addCollection")}
+                    >
                       <p>Launch a New Collection</p>
                     </button>
                   </div>
@@ -126,4 +130,4 @@ const Launchpad = () => {
   );
 };
 
-export default Launchpad;
+export default launchpad;
