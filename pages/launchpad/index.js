@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import Header from "components/Documentation/Header";
-import UserContext from "../../config/context";
 import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";

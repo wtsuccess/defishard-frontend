@@ -37,7 +37,6 @@ const MintNftModal = ({ isShow, onClose }) => {
     if (nearAmount <= 0) return;
 
     const transactions = [];
-    console.log("aaa");
     transactions.push({
       receiverId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ID,
       signerId: accountId,

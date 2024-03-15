@@ -1,34 +1,34 @@
 import React, { useContext, useEffect, useState } from "react";
 import Header from "components/Documentation/Header";
-import UserContext from "../config/context";
 import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import AppNavbar from "pagesComponents/AppNavbar";
-import { viewMethod } from "../config/utils";
-import { prettyTruncate } from "../utils/common";
 import { formatNearAmount } from "near-api-js/lib/utils/format";
-import EditEmptyNftModal from "../components/Modal/EditEmptyNftModal";
-import EditForgedNftModal from "../components/Modal/EditForgedNftModal";
-import MintNftModal from "../components/Modal/MintNftModal";
+import EditEmptyNftModal from "../../components/Modal/EditEmptyNftModal";
+import EditForgedNftModal from "../../components/Modal/EditForgedNftModal";
+import UserContext from "../../config/context";
+import { viewMethod } from "../../config/utils";
+import { prettyTruncate } from "../../utils/common";
+import axios from "axios";
+import Mint_NFT_Modal from "../../components/Modal/Mint_NFT_Modal";
 
 const ModalEnum = {
-  emptyNft: "empty_nft",
-  forgedNft: "forged_nft",
-  mintNft: "mint_nft",
+  TotalCollection: "Total Collection",
+  MyCollection: "My Collection",
+  MintNft: "Mint Nft",
 };
 
-const Dashboard = () => {
+const collection = () => {
   const router = useRouter();
   const { walletSelector, accountId, nftMetadata, signInModal } =
     useContext(UserContext);
 
-  const [emptyNfts, setEmptyNfts] = useState([]);
-  const [forgedNfts, setForgedNfts] = useState([]);
-  const [tab, setTab] = useState("");
+  const [totalCollection, setTotalCollection] = useState([]);
+  const [myCollection, setMyCollection] = useState([]);
+  const [tab, setTab] = useState("totalCollection");
   const [showModal, setShowModal] = useState(null);
-  const [emptySelected, setEmptySelected] = useState(null);
-  const [forgedSelected, setForgedSelected] = useState(null);
+  const [collection, setCollection] = useState(null);
 
   useEffect(() => {
     AOS.init({
@@ -37,64 +37,68 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (!walletSelector.isSignedIn()) {
-      router.replace("/");
-    }
+    // get whole collections
+    axios
+      .post(
+        "https://api.thegraph.com/subgraphs/id/QmSpfS42E5i8X8uifYqH7ToHPcxuLx4vK6k5VpJtRECHR5",
+        {
+          query: `
+            query collection {
+              collections {
+                id
+                name
+                symbol
+                totalSupply
+                price
+                base_uri
+                currency
+                payment_split_percent
+              }
+            }
+          `,
+        }
+      )
+      .then((res) => {
+        const collections = res.data.data.collections;
+        setTotalCollection(collections);
+        console.log("whole collections: ", collections);
+      });
+  }, []);
 
-    getOwnedNft();
-  }, [walletSelector]);
-
-  const getOwnedNft = async () => {
+  useEffect(() => {
+    // get my collections
     if (!accountId) return;
-
-    const nfts = await viewMethod(
-      process.env.NEXT_PUBLIC_NFT_CONTRACT_ID,
-      "nft_tokens_for_owner",
-      { account_id: accountId }
-    );
-
-    const nftWithInfo = await Promise.all(
-      nfts.map(async (nft) => {
-        const nftInfo = await getVaultNftInfo(nft.token_id);
-        nft["vault"] = nftInfo;
-
-        return nft;
-      })
-    );
-
-    const _emptyNfts = [];
-    const _forgedNfts = [];
-
-    for (const nft of nftWithInfo) {
-      if (
-        (nft.vault?.near_amount !== "0" && nft.vault?.near_deposited) ||
-        nft.vault?.token_deposited
-      ) {
-        _forgedNfts.push(nft);
-      } else {
-        _emptyNfts.push(nft);
-      }
-    }
-
-    setEmptyNfts(_emptyNfts);
-    setForgedNfts(_forgedNfts);
-  };
-
-  const getVaultNftInfo = async (tokenId) => {
-    if (!accountId) return;
-
-    const nftContractId = `vault_${tokenId}.${process.env.NEXT_PUBLIC_NFT_CONTRACT_ID}`;
-    const nfts = await viewMethod(nftContractId, "get_info", {
-      account_id: accountId,
-    });
-    return nfts;
-  };
+    axios
+      .post(
+        "https://api.thegraph.com/subgraphs/id/QmSpfS42E5i8X8uifYqH7ToHPcxuLx4vK6k5VpJtRECHR5",
+        {
+          query: `
+            query my_collection {
+              collections(where: {creator_: {name: "${accountId}"}}) {
+                id
+                name
+                symbol
+                totalSupply
+                price
+                base_uri
+                currency
+                payment_split_percent
+              }
+            }
+          `,
+        }
+      )
+      .then((res) => {
+        const collections = res.data.data.collections;
+        setMyCollection(collections);
+        console.log("my collections: ", collections);
+      });
+  }, [accountId]);
 
   return (
     <>
       <Header title="Defishard | Dashboard" />
       <AppNavbar title={router.asPath} />
-
       <section
         className="flex header items-start bg-fill min-h-screen overflow-y-auto py-10"
         style={{
@@ -107,143 +111,129 @@ const Dashboard = () => {
         <div className="flex flex-row gap-x-2 mx-auto w-4/5">
           <div data-aos="zoom-in" className="container w-full">
             <div className="w-full px-0 md:px-4 mt-20 md:mt-0 text-right">
-              <button
-                className="mb-4 bg-eversnipe hover:bg-eversnipe-hover transition-colors duration-100 py-2 px-4 text-eversnipe-dark font-extrabold text-md rounded-lg"
-                onClick={() => {
-                  if (!accountId) {
-                    signInModal.show();
-                  } else {
-                    setShowModal(ModalEnum.mintNft);
-                  }
-                }}
-              >
-                <p>Create New Vault</p>
-              </button>
-
               <div className="hidden md:grid grid-cols-1 justify-start items-start">
                 <div className="text-center font-poppins mr-0 rounded-t-lg bg-eversnipe-hover bg-opacity-10 block p-4 md:mr-1">
                   <p className="text-base text-[#CCA8B4] hover:text-opacity-80">
-                    Empty NFT
+                    Total Collection
                   </p>
                 </div>
               </div>
-
               {/* Mobiile */}
-              <div className="md:hidden grid grid-cols-2 gap-x-3 justify-start items-start">
+              {/* <div className="md:hidden grid grid-cols-2 gap-x-3 justify-start items-start">
                 <div
                   className="text-center font-poppins mr-0 rounded-t-lg bg-eversnipe-hover bg-opacity-10 block p-4 md:mr-1"
                   onClick={() => {
-                    setTab("empty");
+                    setTab("Total Collection");
                   }}
                 >
                   <p className="text-base text-[#CCA8B4] hover:text-opacity-80">
-                    Empty NFT
+                    Total Collection
                   </p>
                 </div>
                 <div
                   className="text-center font-poppins mr-0 rounded-t-lg bg-eversnipe-hover bg-opacity-10 block p-4 md:mr-1"
                   onClick={() => {
-                    setTab("forged");
+                    setTab("My Collection");
                   }}
                 >
                   <p className="text-base text-[#CCA8B4] hover:text-opacity-80">
-                    Forged NFT
+                    My Collection
                   </p>
                 </div>
-              </div>
+              </div> */}
               {/* End of mobile */}
-
               <div className="w-full border-b-2 border-eversnipe mb-2"></div>
-
-              <div className="hidden md:grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
-                {emptyNfts.map((nft) => (
+              <div className="hidden md:grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+                {totalCollection.map((collection) => (
                   <div
                     className="rounded text-center overflow-hidden cursor-pointer shadow-lg shadow-[#ffffff1b] hover:shadow-[#ffffff3a]"
+                    key={collection.id}
                     onClick={() => {
-                      setShowModal(ModalEnum.emptyNft);
-                      setEmptySelected(nft);
+                      setShowModal(ModalEnum.TotalCollection);
+                      setCollection(collection);
                     }}
                   >
                     <img
                       className="w-full"
-                      src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
+                      // src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
                       alt="media"
                     />
                     <div className="px-6 py-4">
                       <div className="font-bold text-gray-300 text-xl mb-2">
-                        # {nft.token_id}
+                        {collection.name}
                       </div>
                       <p className="text-gray-600 text-sm">
-                        Defishard NFT #{prettyTruncate(nft.token_id, 200)}
+                        {collection.symbol}
                       </p>
                     </div>
                     <div className="px-6 pt-4 pb-2">
                       <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                        {formatNearAmount(nft.vault?.near_amount)} Ⓝ
+                        {formatNearAmount(collection.price)}
+                        {collection.currency}
                       </span>
                     </div>
                   </div>
                 ))}
               </div>
-
               {/* Mobile */}
-              {tab === "" || tab === "empty" ? (
+              {tab === "Total Collection" && (
                 <div className="md:hidden grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
-                  {emptyNfts.map((nft) => (
+                  {totalCollection.map((collection) => (
                     <div
                       className="rounded text-center overflow-hidden cursor-pointer shadow-lg shadow-[#ffffff1b] hover:shadow-[#ffffff3a]"
-                      onClick={() => {
-                        setShowModal(ModalEnum.emptyNft);
-                        setEmptySelected(nft);
-                      }}
+                      // onClick={() => {
+                      //   setShowModal(ModalEnum.TotalCollection);
+                      //   setEmptySelected(collection);
+                      // }}
                     >
                       <img
                         className="w-full"
-                        src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
+                        // src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
                         alt="media"
                       />
                       <div className="px-6 py-4">
                         <div className="font-bold text-gray-300 text-xl mb-2">
-                          # {nft.token_id}
+                          {collection.name}
                         </div>
                         <p className="text-gray-600 text-sm">
-                          Defishard NFT #{prettyTruncate(nft.token_id, 200)}
+                          {collection.symbol}
                         </p>
                       </div>
                       <div className="px-6 pt-4 pb-2">
                         <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                          {formatNearAmount(nft.vault?.near_amount)} Ⓝ
+                          {/* {formatNearAmount(collection.mintPrice)} {collection.mintCurrency} */}
                         </span>
                       </div>
                     </div>
                   ))}
                 </div>
-              ) : (
+              )}
+              {tab === "My Collection" && (
                 <div className="grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-                  {forgedNfts.map((nft) => (
+                  {myCollection.map((collection) => (
                     <div
                       className="rounded overflow-hidden cursor-pointer shadow-lg shadow-[#0000001a] hover:shadow-[#ffffff0d]"
-                      onClick={() => {
-                        setShowModal(ModalEnum.forgedNft);
-                        setForgedSelected(nft);
-                      }}
+                      // onClick={() => {
+                      //   setShowModal(ModalEnum.TotalCollection);
+                      //   setForgedSelected(nft);
+                      // }}
                     >
                       <img
                         className="w-full"
-                        src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
+                        // src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
                         alt="media"
                       />
                       <div className="px-6 py-4">
                         <div className="font-bold text-gray-300 text-xl mb-2">
-                          # {nft.token_id}
+                          {collection.name}
                         </div>
                         <p className="text-gray-600 text-sm">
-                          Defishard NFT #{prettyTruncate(nft.token_id, 200)}
+                          {collection.symbol}
                         </p>
                       </div>
                       <div className="px-6 pt-4 pb-2">
                         <span className="inline-block bg-[#54a753] rounded-full px-3 py-1 text-md font-semibold text-black mr-2 mb-2">
-                          {formatNearAmount(nft.vault?.near_amount)} Ⓝ
+                          {/* {formatNearAmount(collection.mintPrice)} {collection.mintCurrency} */}
                         </span>
                       </div>
                     </div>
@@ -251,41 +241,41 @@ const Dashboard = () => {
                 </div>
               )}
               {/* End of mobile */}
-
               <div className="hidden md:grid grid-cols-1 justify-start items-start mt-10">
                 <div className="text-center font-poppins mr-0 rounded-t-lg bg-eversnipe-hover bg-opacity-10 block p-4 md:mr-1">
                   <p className="text-base text-[#CCA8B4] hover:text-opacity-80">
-                    Forged NFT
+                    My Collections
                   </p>
                 </div>
               </div>
               <div className="w-full border-b-2 border-eversnipe mb-2"></div>
 
-              <div className="grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
-                {forgedNfts.map((nft) => (
+              <div className="grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+                {myCollection.map((collection) => (
                   <div
                     className="rounded text-center overflow-hidden cursor-pointer shadow-lg shadow-[#ffffff1b] hover:shadow-[#ffffff3a]"
-                    onClick={() => {
-                      setShowModal(ModalEnum.forgedNft);
-                      setForgedSelected(nft);
-                    }}
+                    // onClick={() => {
+                    //   setShowModal(ModalEnum.forgedNft);
+                    //   setForgedSelected(nft);
+                    // }}
                   >
                     <img
                       className="w-full"
-                      src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
+                      // src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
                       alt="media"
                     />
                     <div className="px-6 py-4">
                       <div className="font-bold text-gray-300 text-xl mb-2">
-                        # {nft.token_id}
+                        {collection.name}
                       </div>
                       <p className="text-gray-600 text-sm">
-                        Defishard NFT #{prettyTruncate(nft.token_id, 200)}
+                        {collection.symbol}
                       </p>
                     </div>
                     <div className="px-6 pt-4 pb-2">
                       <span className="inline-block bg-[#54a753] rounded-full px-3 py-1 text-md font-semibold text-black mr-2 mb-2">
-                        {formatNearAmount(nft.vault?.near_amount)} Ⓝ
+                        {formatNearAmount(collection.price)}
+                        {collection.currency}
                       </span>
                     </div>
                   </div>
@@ -295,40 +285,28 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-
-      {showModal === ModalEnum.emptyNft && (
-        <EditEmptyNftModal
-          isShow={showModal === ModalEnum.emptyNft}
-          data={emptySelected}
+      /*{" "}
+      {showModal === ModalEnum.TotalCollection && (
+        <Mint_NFT_Modal
+          isShow={showModal === ModalEnum.TotalCollection}
+          data={collection}
           onClose={() => {
             setShowModal(null);
-            router.replace("/single-asset");
+            // router.replace("/single-asset");
           }}
         />
       )}
-
-      {showModal === ModalEnum.forgedNft && (
-        <EditForgedNftModal
-          isShow={showModal === ModalEnum.forgedNft}
-          data={forgedSelected}
-          onClose={() => {
-            setShowModal(null);
-            router.replace("/single-asset");
-          }}
-        />
-      )}
-
-      {showModal === ModalEnum.mintNft && (
+      {/* {showModal === ModalEnum.MintNft && (
         <MintNftModal
-          isShow={showModal === ModalEnum.mintNft}
+          isShow={showModal === ModalEnum.MintNft}
           onClose={() => {
             setShowModal(null);
             router.replace("/single-asset");
           }}
-        />
-      )}
+        />s
+      )} */}
     </>
   );
 };
 
-export default Dashboard;
+export default collection;
