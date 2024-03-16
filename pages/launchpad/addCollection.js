@@ -6,6 +6,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import AppNavbar from "pagesComponents/AppNavbar";
 import { base_uri } from "../../config/constant";
+import { parseNearAmount } from "near-api-js/lib/utils/format";
 
 const addCollection = () => {
   const router = useRouter();
@@ -37,12 +38,14 @@ const addCollection = () => {
               methodName: "launch",
               args: {
                 metadata: {
-                  spec: "nft-2.0.0",
+                  spec: "nft-1.0.0",
                   name: name,
                   symbol: symbol,
                   base_uri: base_uri, // replace with baseURI
                 },
-                mint_price: mintPrice.toString(),
+                mint_price: mintCurrency
+                  ? mintPrice * 1000000
+                  : parseNearAmount(mintPrice),
                 mint_currency: mintCurrency, // Consider decimal of the currency
                 payment_split_percent: royaltyFee.toString(),
               },

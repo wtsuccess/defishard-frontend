@@ -91,7 +91,7 @@ const Home = () => {
 
   const [showModal, setShowModal] = useState(null);
 
-  useEffect(() => {
+    useEffect(() => {
     AOS.init({
       duration: 300,
     });

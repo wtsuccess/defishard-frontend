@@ -12,6 +12,7 @@ import { viewMethod } from "../../config/utils";
 import { prettyTruncate } from "../../utils/common";
 import axios from "axios";
 import Mint_NFT_Modal from "../../components/Modal/Mint_NFT_Modal";
+import { base_uri } from "../../config/constant";
 
 const ModalEnum = {
   TotalCollection: "Total Collection",
@@ -40,7 +41,7 @@ const collection = () => {
     // get whole collections
     axios
       .post(
-        "https://api.thegraph.com/subgraphs/id/QmSpfS42E5i8X8uifYqH7ToHPcxuLx4vK6k5VpJtRECHR5",
+        "https://api.thegraph.com/subgraphs/name/icetrust0212/defishards-test",
         {
           query: `
             query collection {
@@ -59,6 +60,7 @@ const collection = () => {
         }
       )
       .then((res) => {
+        console.log("res", res);
         const collections = res.data.data.collections;
         setTotalCollection(collections);
         console.log("whole collections: ", collections);
@@ -70,7 +72,7 @@ const collection = () => {
     if (!accountId) return;
     axios
       .post(
-        "https://api.thegraph.com/subgraphs/id/QmSpfS42E5i8X8uifYqH7ToHPcxuLx4vK6k5VpJtRECHR5",
+        "https://api.thegraph.com/subgraphs/name/icetrust0212/defishards-test",
         {
           query: `
             query my_collection {
@@ -144,7 +146,7 @@ const collection = () => {
               {/* End of mobile */}
               <div className="w-full border-b-2 border-eversnipe mb-2"></div>
               <div className="hidden md:grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-                {totalCollection.map((collection) => (
+                {totalCollection.map((collection, index) => (
                   <div
                     className="rounded text-center overflow-hidden cursor-pointer shadow-lg shadow-[#ffffff1b] hover:shadow-[#ffffff3a]"
                     key={collection.id}
@@ -155,7 +157,7 @@ const collection = () => {
                   >
                     <img
                       className="w-full"
-                      // src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
+                      src={base_uri + index + ".png"}
                       alt="media"
                     />
                     <div className="px-6 py-4">
@@ -168,7 +170,9 @@ const collection = () => {
                     </div>
                     <div className="px-6 pt-4 pb-2">
                       <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                        {formatNearAmount(collection.price)}
+                        {collection.currency
+                          ? collection.price / 1000000
+                          : formatNearAmount(collection.price)}
                         {collection.currency}
                       </span>
                     </div>
@@ -285,26 +289,16 @@ const collection = () => {
           </div>
         </div>
       </section>
-      /*{" "}
       {showModal === ModalEnum.TotalCollection && (
         <Mint_NFT_Modal
           isShow={showModal === ModalEnum.TotalCollection}
-          data={collection}
+          collection={collection}
           onClose={() => {
             setShowModal(null);
-            // router.replace("/single-asset");
+            router.replace("/collection");
           }}
         />
       )}
-      {/* {showModal === ModalEnum.MintNft && (
-        <MintNftModal
-          isShow={showModal === ModalEnum.MintNft}
-          onClose={() => {
-            setShowModal(null);
-            router.replace("/single-asset");
-          }}
-        />s
-      )} */}
     </>
   );
 };
