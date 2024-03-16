@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import AppNavbar from "pagesComponents/AppNavbar";
-import { base_uri } from "../../config/constant";
 import { parseNearAmount } from "near-api-js/lib/utils/format";
 
 const addCollection = () => {
@@ -55,7 +54,7 @@ const addCollection = () => {
                 payment_split_percent: royaltyFee.toString(),
               },
               gas: "300000000000000",
-              deposit: "7000000000000000000000000",
+              deposit: parseNearAmount("7"),
             },
           },
         ],

@@ -47,7 +47,6 @@ const launchpad = () => {
                       <p className="text-lg font-bold text-[#CCA8B4] hover:text-opacity-80 my-6 underline">
                         Ongoing Mints
                       </p>
-                      {/* Loop here */}
                       <div className="flex flex-col items-center justify-center">
                         <p className="text-base text-[#CCA8B4] hover:text-opacity-80">
                           Shardqueen NFT

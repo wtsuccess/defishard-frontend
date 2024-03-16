@@ -1,18 +1,16 @@
 import { useContext } from "react";
-import { prettyTruncate } from "../../utils/common";
+import { parseNearAmount } from "near-api-js/lib/utils/format";
 import UserContext from "../../config/context";
 import { formatNearAmount } from "near-api-js/lib/utils/format";
 import closeIcon from "../../svgs/close.svg";
 import { base_uri } from "../../config/constant";
 
-const Mint_NFT_Modal = ({ isShow, collection, onClose }) => {
+const Mint_NFT_Modal = ({ collection, onClose }) => {
   console.log("collection", collection);
   const { walletSelectorObject, accountId, signInModal } =
     useContext(UserContext);
 
-  console.log("walletSelectorObject", walletSelectorObject.getAccounts);
-
-  if (!isShow) {
+  if (!accountId) {
     signInModal.show();
   }
 
@@ -30,7 +28,7 @@ const Mint_NFT_Modal = ({ isShow, collection, onClose }) => {
               account_id: accountId,
             },
             gas: "100000000000000",
-            deposit: "10000000000000000000000",
+            deposit: parseNearAmount("0.01"),
           },
         },
       ],
@@ -38,7 +36,7 @@ const Mint_NFT_Modal = ({ isShow, collection, onClose }) => {
 
     if (collection.currency) {
       transactions.push({
-        receiverId: collection.currency, // "usdc.fakes.testnet"
+        receiverId: collection.currency,
         signerId: accountId,
         actions: [
           {
@@ -49,7 +47,7 @@ const Mint_NFT_Modal = ({ isShow, collection, onClose }) => {
                 account_id: collection.id,
               },
               gas: "100000000000000",
-              deposit: "10000000000000000000000",
+              deposit: parseNearAmount("0.01"),
             },
           },
         ],
@@ -95,7 +93,7 @@ const Mint_NFT_Modal = ({ isShow, collection, onClose }) => {
               },
             },
             gas: "200000000000000",
-            deposit: "4000000000000000000000000",
+            deposit: parseNearAmount("1.6"),
           },
         },
       ],
@@ -139,11 +137,11 @@ const Mint_NFT_Modal = ({ isShow, collection, onClose }) => {
               <p className="text-lg text-white my-4">
                 Mint Price
                 <span className="font-bold">
-                  {" "}
                   {collection.currency
                     ? collection.price / 1000000
                     : formatNearAmount(collection.price)}
-                  {collection.currency} Ⓝ
+                  &nbsp;
+                  {collection.currency ? "USDC" : "Ⓝ"}
                 </span>
               </p>
             </div>

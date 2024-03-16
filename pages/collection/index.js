@@ -48,9 +48,8 @@ const collection = () => {
         }
       )
       .then((res) => {
-        const collections = res.data.data.collections;
-        setTotalCollections(collections);
-        setCollections(collections);
+        setTotalCollections(res.data.data.collections);
+        setCollections(res.data.data.collections);
       });
   }, []);
 
@@ -77,12 +76,10 @@ const collection = () => {
         }
       )
       .then((res) => {
-        const collections = res.data.data.collections;
-        setMyCollections(collections);
+        setMyCollections(res.data.data.collections);
+        console.log(res.data.data.collections);
       });
   }, [accountId]);
-
-  const toggleCollection = () => {};
 
   return (
     <>
@@ -135,10 +132,10 @@ const collection = () => {
                     />
                     <div className="px-6 py-4">
                       <div className="font-bold text-gray-300 text-xl mb-2">
-                        {collection.name}
+                        {collection.name}({collection.symbol})
                       </div>
                       <p className="text-gray-600 text-sm">
-                        {collection.symbol}
+                        {collection.payment_split_percent} %
                       </p>
                     </div>
                     <div className="px-6 pt-4 pb-2">
@@ -146,6 +143,7 @@ const collection = () => {
                         {collection.currency
                           ? collection.price / 1000000
                           : formatNearAmount(collection.price)}
+                        &nbsp;
                         {collection.currency ? "USDC" : "Ⓝ"}
                       </span>
                     </div>
