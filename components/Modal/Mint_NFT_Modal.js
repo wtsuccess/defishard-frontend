@@ -7,11 +7,13 @@ import { base_uri } from "../../config/constant";
 
 const Mint_NFT_Modal = ({ isShow, collection, onClose }) => {
   console.log("collection", collection);
-  const { walletSelectorObject, accountId, nftMetadata } =
+  const { walletSelectorObject, accountId, signInModal } =
     useContext(UserContext);
 
+  console.log("walletSelectorObject", walletSelectorObject.getAccounts);
+
   if (!isShow) {
-    return null;
+    signInModal.show();
   }
 
   const mint = async () => {

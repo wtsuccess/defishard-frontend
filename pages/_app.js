@@ -51,10 +51,12 @@ export default function MyApp({ Component, pageProps }) {
         setupLedger({ iconUrl: ledgerIconUrl }),
       ],
     });
-    const modal = setupModal(selector, {
-      contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ID,
-      description: "Please connect your wallet",
-    });
+    const modal = setupModal(selector, {});
+
+    // const modal = setupModal(selector, {
+    //   contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ID,
+    //   description: "Please connect your wallet",
+    // });
 
     const isSignedIn = selector.isSignedIn();
 

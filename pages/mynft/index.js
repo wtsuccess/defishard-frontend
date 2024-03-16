@@ -12,13 +12,7 @@ import { base_uri } from "../../config/constant";
 
 const mynft = (collection) => {
   const router = useRouter();
-  const {
-    walletSelector,
-    accountId,
-    nftMetadata,
-    signInModal,
-    walletSelectorObject,
-  } = useContext(UserContext);
+  const { accountId, walletSelectorObject } = useContext(UserContext);
 
   const [myNFT, setMyNFT] = useState([]);
   const [showModal, setShowModal] = useState(null);

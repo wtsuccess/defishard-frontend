@@ -11,14 +11,15 @@ import { parseNearAmount } from "near-api-js/lib/utils/format";
 const addCollection = () => {
   const router = useRouter();
 
-  const [baseURI, setBaseURI] = useState("");
+  const [baseURI, setBaseURI] = useState();
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
   const [mintPrice, setMintPrice] = useState(0);
   const [mintCurrency, setMintCurrency] = useState();
   const [royaltyFee, setRoyaltyFee] = useState(0);
 
-  const { walletSelectorObject, accountId } = useContext(UserContext);
+  const { walletSelectorObject, accountId, signInModal } =
+    useContext(UserContext);
 
   useEffect(() => {
     AOS.init({
@@ -27,10 +28,14 @@ const addCollection = () => {
   }, []);
 
   const launchNewCollection = async () => {
+    if (!walletSelectorObject) {
+      signInModal.show();
+      return;
+    }
     try {
       const launchTx = await walletSelectorObject.signAndSendTransaction({
-        receiverId: process.env.NEXT_PUBLIC_LAUNCHPAD_CONTRACT_ID,
         signerId: accountId,
+        receiverId: process.env.NEXT_PUBLIC_LAUNCHPAD_CONTRACT_ID,
         actions: [
           {
             type: "FunctionCall",
@@ -41,12 +46,12 @@ const addCollection = () => {
                   spec: "nft-1.0.0",
                   name: name,
                   symbol: symbol,
-                  base_uri: base_uri, // replace with baseURI
+                  base_uri: baseURI,
                 },
                 mint_price: mintCurrency
-                  ? mintPrice * 1000000
-                  : parseNearAmount(mintPrice),
-                mint_currency: mintCurrency, // Consider decimal of the currency
+                  ? (mintPrice * 1000000).toString()
+                  : parseNearAmount(mintPrice.toString()),
+                mint_currency: mintCurrency ? mintCurrency : undefined,
                 payment_split_percent: royaltyFee.toString(),
               },
               gas: "300000000000000",
@@ -89,7 +94,7 @@ const addCollection = () => {
           <div className="grid gap-6 mb-6 md:grid-cols-2">
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Collection name
+                Collection Name
               </label>
               <input
                 className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -100,7 +105,7 @@ const addCollection = () => {
             </div>
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Collection symbol
+                Collection Symbol
               </label>
               <input
                 className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -111,18 +116,18 @@ const addCollection = () => {
             </div>
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                BASE URI
+                Base Uri
               </label>
               <input
                 className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="https://"
+                placeholder="https://ipfs.io/ipfs/QmYDvPAXtiJg7s8JdRBSLWdgSphQdac8j1YuQNNxcGE1hg/"
                 value={baseURI}
                 onChange={(e) => setBaseURI(e.target.value)}
               />
             </div>
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Payment Split Percent
+                Payment Split Percent(%)
               </label>
               <input
                 className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -142,19 +147,19 @@ const addCollection = () => {
                 onChange={(e) => setMintPrice(e.target.value)}
               />
             </div>
-          </div>
-          <div className="mb-6">
-            <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-              Mint Currency
-            </label>
-            <select
-              value={mintCurrency}
-              onChange={(e) => setMintCurrency(e.target.value)}
-              name="mintCurrency"
-              className="bg-gray-50 border border-gray-300 text-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-              <option value="usdc.fakes.testnet">USDT</option>
-            </select>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
+                Mint Currency
+              </label>
+              <select
+                value={mintCurrency}
+                onChange={(e) => setMintCurrency(e.target.value)}
+                className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option value="">Near</option>
+                <option value="usdc.fakes.testnet">USDT</option>
+              </select>
+            </div>
           </div>
 
           <button
@@ -163,25 +168,6 @@ const addCollection = () => {
           >
             Create Collection
           </button>
-          {/* {txObject ? (
-            <>
-              <div
-                className="text-white mt-5 text-center bg-green-500 border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="50"
-              >
-                Success
-              </div>
-
-              <a
-                target="_blank"
-                className="text-white mt-5 text-center bg-green-500 border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 block"
-              >
-                View on Nearscan
-              </a>
-            </>
-          ) : (
-            ""
-          )} */}
         </div>
       </section>
     </>
