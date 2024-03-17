@@ -28,9 +28,8 @@ export default function IndexNavbar() {
     if (!walletSelector.isSignedIn()) {
       return;
     }
-
+    console.log("walletSelectorObject", walletSelectorObject);
     await walletSelectorObject.signOut();
-    router.replace(process.env.NEXT_PUBLIC_BASE_URL);
   };
 
   return (

@@ -4,18 +4,17 @@ import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import AppNavbar from "pagesComponents/AppNavbar";
-import { formatNearAmount } from "near-api-js/lib/utils/format";
 import UserContext from "../../config/context";
-import { viewMethod } from "../../config/utils";
-import axios from "axios";
 import { base_uri } from "../../config/constant";
+import { viewMethod } from "../../config/utils";
 
-const mynft = (collection) => {
+const mynft = () => {
   const router = useRouter();
-  const { accountId, walletSelectorObject } = useContext(UserContext);
+  const { accountId } = useContext(UserContext);
 
-  const [myNFT, setMyNFT] = useState([]);
-  const [showModal, setShowModal] = useState(null);
+  const [nfts, setNfts] = useState([]);
+
+  console.log("nfts", nfts);
 
   useEffect(() => {
     AOS.init({
@@ -23,21 +22,18 @@ const mynft = (collection) => {
     });
   }, []);
 
-  const fetchNftByOwner = async () => {
-    // const getNftByOwner = await viewMethod(
-    //   process.env.NEXT_PUBLIC_NFT_CONTRACT_ID,
-    //   "nft_tokens_for_owner",
-    //   { account_id: process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ID }
-    // );
-
-    // setNftByOwner(getNftByOwner);
-    const getNftByOwner = await walletSelectorObject.viewMethod({
-      method: "nft_tokens_for_owner",
-      contractId: collection.id,
-    });
-  };
-
-  useEffect(() => {}, [accountId]);
+  useEffect(() => {
+    (async () => {
+      const nfts = await viewMethod(
+        "defitest.benz - launchpad1.testnet",
+        "nft_supply_for_owner",
+        {
+          account_id: accountId,
+        }
+      );
+      setNfts(nfts);
+    })();
+  }, [accountId]);
 
   return (
     <>
@@ -55,33 +51,47 @@ const mynft = (collection) => {
         <div className="flex flex-row gap-x-2 mx-auto w-4/5">
           <div data-aos="zoom-in" className="container w-full">
             <div className="w-full px-0 md:px-4 mt-20 md:mt-0 text-right">
+              <div className="hidden md:grid grid-cols-1 justify-start items-start">
+                <div className="text-center font-poppins mr-0 rounded-t-lg bg-opacity-10 block p-4 md:mr-1">
+                  <span
+                    className="text-base text-[#CCA8B4] hover:text-opacity-80 cursor-pointer"
+                    // onClick={() => setCollections(totalCollections)}
+                  >
+                    Total Collection
+                  </span>
+                </div>
+              </div>
+              <div className="w-full border-b-2 border-eversnipe mb-2"></div>
               <div className="hidden md:grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-                {myNFT.map((nft) => (
+                {nfts.map((nft, index) => (
                   <div
                     className="rounded text-center overflow-hidden cursor-pointer shadow-lg shadow-[#ffffff1b] hover:shadow-[#ffffff3a]"
-                    key={nft.id}
+                    key={nft.symbol}
                     // onClick={() => {
-                    //   setShowModal(ModalEnum.TotalCollection);
+                    //   setShowModal(true);
                     //   setCollection(collection);
                     // }}
                   >
                     <img
                       className="w-full"
-                      src={base_uri + "0.png"}
+                      src={base_uri + index + ".png"}
                       alt="media"
                     />
                     <div className="px-6 py-4">
                       <div className="font-bold text-gray-300 text-xl mb-2">
-                        {nft.name}
+                        {/* {collection.name}({collection.symbol}) */}
                       </div>
-                      <p className="text-gray-600 text-sm">{nft.symbol}</p>
+                      <p className="text-gray-600 text-sm">
+                        {/* {collection.payment_split_percent} % */}
+                      </p>
                     </div>
                     <div className="px-6 pt-4 pb-2">
                       <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                        {nft.currency
-                          ? nft.price / 1000000
-                          : formatNearAmount(nft.price)}
-                        {nft.currency}
+                        {/* {collection.currency
+                          ? collection.price / 1000000
+                          : formatNearAmount(collection.price)}
+                        &nbsp;
+                        {collection.currency ? "USDC" : "Ⓝ"} */}
                       </span>
                     </div>
                   </div>
@@ -91,6 +101,17 @@ const mynft = (collection) => {
           </div>
         </div>
       </section>
+
+      {/* {showModal && (
+        <Mint_NFT_Modal
+          isShow={showModal}
+          collection={collection}
+          onClose={() => {
+            setShowModal(false);
+            router.replace("/collection");
+          }}
+        />
+      )} */}
     </>
   );
 };

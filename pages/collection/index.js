@@ -42,51 +42,29 @@ const collection = () => {
                 base_uri
                 currency
                 payment_split_percent
+                creator {id}
               }
             }
           `,
         }
       )
       .then((res) => {
-        setTotalCollections(res.data.data.collections);
-        setCollections(res.data.data.collections);
+        const totalCollections = res.data.data.collections;
+        setTotalCollections(totalCollections);
+        const myCollections = totalCollections.filter((collection) => {
+          return collection.creator.id === accountId;
+        });
+        setMyCollections(myCollections);
+        setCollections(totalCollections);
       });
   }, []);
-
-  useEffect(() => {
-    if (!accountId) return;
-    axios
-      .post(
-        "https://api.thegraph.com/subgraphs/name/icetrust0212/defishards-test",
-        {
-          query: `
-            query my_collection {
-              collections(where: {creator_: {name: "${accountId}"}}) {
-                id
-                name
-                symbol
-                totalSupply
-                price
-                base_uri
-                currency
-                payment_split_percent
-              }
-            }
-          `,
-        }
-      )
-      .then((res) => {
-        setMyCollections(res.data.data.collections);
-        console.log(res.data.data.collections);
-      });
-  }, [accountId]);
 
   return (
     <>
       <Header title="Defishard | Dashboard" />
       <AppNavbar title={router.asPath} />
       <section
-        className="flex header items-start bg-fill min-h-screen overflow-y-auto py-10"
+        className="flex header items-start bg-fill min-h-screen overflow-y-auto h-auto"
         style={{
           background:
             "linear-gradient(180deg, rgba(9, 10, 14) 0%, rgba(20,20,32,1) 100%)",
@@ -97,8 +75,8 @@ const collection = () => {
         <div className="flex flex-row gap-x-2 mx-auto w-4/5">
           <div data-aos="zoom-in" className="container w-full">
             <div className="w-full px-0 md:px-4 mt-20 md:mt-0 text-right">
-              <div className="hidden md:grid grid-cols-1 justify-start items-start">
-                <div className="text-center font-poppins mr-0 rounded-t-lg bg-opacity-10 block p-4 md:mr-1">
+              <div className="justify-start items-start">
+                <div className="text-center font-poppins mr-0 rounded-t-lg bg-opacity-10 block px-4 md:mr-1 py-5">
                   <span
                     className="text-base text-[#CCA8B4] hover:text-opacity-80 cursor-pointer"
                     onClick={() => setCollections(totalCollections)}
@@ -115,7 +93,7 @@ const collection = () => {
                 </div>
               </div>
               <div className="w-full border-b-2 border-eversnipe mb-2"></div>
-              <div className="hidden md:grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-8 text-neutral-600 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                 {collections.map((collection, index) => (
                   <div
                     className="rounded text-center overflow-hidden cursor-pointer shadow-lg shadow-[#ffffff1b] hover:shadow-[#ffffff3a]"
@@ -126,9 +104,9 @@ const collection = () => {
                     }}
                   >
                     <img
-                      className="w-full"
                       src={base_uri + index + ".png"}
                       alt="media"
+                      className="w-full"
                     />
                     <div className="px-6 py-4">
                       <div className="font-bold text-gray-300 text-xl mb-2">

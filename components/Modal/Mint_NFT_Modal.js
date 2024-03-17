@@ -4,9 +4,11 @@ import UserContext from "../../config/context";
 import { formatNearAmount } from "near-api-js/lib/utils/format";
 import closeIcon from "../../svgs/close.svg";
 import { base_uri } from "../../config/constant";
+import { viewMethod } from "../../config/utils";
 
 const Mint_NFT_Modal = ({ collection, onClose }) => {
   console.log("collection", collection);
+
   const { walletSelectorObject, accountId, signInModal } =
     useContext(UserContext);
 
@@ -15,6 +17,11 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
   }
 
   const mint = async () => {
+    const totalSupply = Number(
+      await viewMethod(collection.id, "nft_total_supply")
+    );
+    const token_id = (totalSupply + 1).toString();
+    console.log(typeof token_id);
     const transactions = [];
     transactions.push({
       receiverId: collection.id,
@@ -83,17 +90,20 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
           params: {
             methodName: "nft_mint",
             args: {
-              token_id: "1",
+              token_id: token_id,
               token_owner_id: accountId,
               token_metadata: {
-                title: "Iceberg NFT",
-                description: "Iceberg NFT Description",
-                media: `1.png`,
-                copies: 1,
+                title: "",
+                description: "",
+                media: `${token_id}.png`,
               },
             },
             gas: "200000000000000",
-            deposit: parseNearAmount("1.6"),
+            deposit: collection.currency
+              ? parseNearAmount("1.6")
+              : parseNearAmount(
+                  (parseInt(collection.price) / 1e24 + 1.6).toString()
+                ),
           },
         },
       ],

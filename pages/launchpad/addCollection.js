@@ -28,8 +28,7 @@ const addCollection = () => {
 
   const launchNewCollection = async () => {
     if (!walletSelectorObject) {
-      signInModal.show();
-      return;
+      return signInModal.show();
     }
     try {
       const launchTx = await walletSelectorObject.signAndSendTransaction({
