@@ -65,6 +65,7 @@ const addCollection = () => {
         ],
       });
       await launchTx.wait();
+      router.push("/collections");
     } catch (err) {
       console.error("error", err);
     }

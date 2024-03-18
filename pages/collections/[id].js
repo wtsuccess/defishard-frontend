@@ -8,9 +8,8 @@ import AppNavbar from "pagesComponents/AppNavbar";
 import UserContext from "../../config/context";
 
 import axios from "axios";
-import { formatNearAmount } from "near-api-js/lib/utils/format";
 import Mint_NFT_Modal from "../../components/Modal/Mint_NFT_Modal";
-import Burn_NFT_Modal from "../../components/Modal/Burn_NFT_Modal copy";
+import Burn_NFT_Modal from "../../components/Modal/Burn_NFT_Modal";
 
 const collection = () => {
   const router = useRouter();

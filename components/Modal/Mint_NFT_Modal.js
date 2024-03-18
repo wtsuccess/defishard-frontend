@@ -69,8 +69,9 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
               args: {
                 receiver_id: collection.id,
                 amount: (
-                  Number(collection.price) *
-                  Number(collection.payment_split_percent)
+                  (Number(collection.price) *
+                    Number(collection.payment_split_percent)) /
+                  100
                 ).toString(),
                 msg: "",
               },
