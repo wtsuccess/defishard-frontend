@@ -30,6 +30,12 @@ const addCollection = () => {
     if (!walletSelectorObject) {
       return signInModal.show();
     }
+
+    if (!name || !symbol || !mintPrice || !royaltyFee || !baseURI) {
+      alert("Input all the infos about collection");
+      return;
+    }
+
     try {
       const launchTx = await walletSelectorObject.signAndSendTransaction({
         signerId: accountId,

@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import AppNavbar from "pagesComponents/AppNavbar";
-import path from "path";
 
 const launchpad = () => {
   const router = useRouter();
@@ -72,7 +71,7 @@ const launchpad = () => {
                     </p>
                     <button
                       className="mb-4 bg-eversnipe hover:bg-eversnipe-hover transition-colors duration-100 py-2 px-4 text-eversnipe-dark font-extrabold text-md rounded-lg"
-                      onClick={() => router.push("/launchpad/addCollection")}
+                      onClick={() => router.push("/collection/addCollection")}
                     >
                       <p>Launch a New Collection</p>
                     </button>

@@ -28,7 +28,6 @@ export default function IndexNavbar() {
     if (!walletSelector.isSignedIn()) {
       return;
     }
-    console.log("walletSelectorObject", walletSelectorObject);
     await walletSelectorObject.signOut();
   };
 

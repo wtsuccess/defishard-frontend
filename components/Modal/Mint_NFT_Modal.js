@@ -7,8 +7,6 @@ import { base_uri } from "../../config/constant";
 import { viewMethod } from "../../config/utils";
 
 const Mint_NFT_Modal = ({ collection, onClose }) => {
-  console.log("collection", collection);
-
   const { walletSelectorObject, accountId, signInModal } =
     useContext(UserContext);
 
@@ -20,8 +18,8 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
     const totalSupply = Number(
       await viewMethod(collection.id, "nft_total_supply")
     );
+    console.log("totalSupply", totalSupply);
     const token_id = (totalSupply + 1).toString();
-    console.log(typeof token_id);
     const transactions = [];
     transactions.push({
       receiverId: collection.id,
@@ -70,7 +68,10 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
               methodName: "ft_transfer_call",
               args: {
                 receiver_id: collection.id,
-                amount: collection.price,
+                amount: (
+                  Number(collection.price) *
+                  Number(collection.payment_split_percent)
+                ).toString(),
                 msg: "",
               },
               gas: "100000000000000",
@@ -102,7 +103,7 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
             deposit: collection.currency
               ? parseNearAmount("1.6")
               : parseNearAmount(
-                  (parseInt(collection.price) / 1e24 + 1.6).toString()
+                  (Number(formatNearAmount(collection.price)) + 1.6).toString()
                 ),
           },
         },
@@ -145,7 +146,7 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
               </p>
 
               <p className="text-lg text-white my-4">
-                Mint Price
+                Mint Price &nbsp;
                 <span className="font-bold">
                   {collection.currency
                     ? collection.price / 1000000

@@ -125,7 +125,7 @@ const AppNavbar = ({ title }) => {
                   </p>
                 </div>
               </Link>
-              <Link href="/collection" replace={true}>
+              <Link href="/collections" replace={true}>
                 <div
                   className={`${
                     title === TitleEnum.Launchpad &&
@@ -139,23 +139,6 @@ const AppNavbar = ({ title }) => {
                     } text-base text-[#CCA8B4] hover:text-opacity-80`}
                   >
                     Collection
-                  </p>
-                </div>
-              </Link>
-              <Link href="/mynft" replace={true}>
-                <div
-                  className={`${
-                    title === TitleEnum.MyNFTs &&
-                    "bg-eversnipe-hover bg-opacity-10"
-                  } 
-                 font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}
-                >
-                  <p
-                    className={`${
-                      title === TitleEnum.MyNFTs && "font-bold underline"
-                    } text-base text-[#CCA8B4] hover:text-opacity-80`}
-                  >
-                    My NFTs
                   </p>
                 </div>
               </Link>
