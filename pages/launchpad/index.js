@@ -71,7 +71,7 @@ const launchpad = () => {
                     </p>
                     <button
                       className="mb-4 bg-eversnipe hover:bg-eversnipe-hover transition-colors duration-100 py-2 px-4 text-eversnipe-dark font-extrabold text-md rounded-lg"
-                      onClick={() => router.push("/collection/addCollection")}
+                      onClick={() => router.push("/collections/addCollection")}
                     >
                       <p>Launch a New Collection</p>
                     </button>

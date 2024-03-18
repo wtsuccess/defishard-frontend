@@ -94,7 +94,7 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
               token_id: token_id,
               token_owner_id: accountId,
               token_metadata: {
-                title: "",
+                title: token_id,
                 description: "",
                 media: `${token_id}.png`,
               },
