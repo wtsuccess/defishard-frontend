@@ -87,7 +87,7 @@ const collection = () => {
           <div data-aos="zoom-in" className="container w-full">
             <div className="w-full px-0 md:px-4 mt-20 md:mt-0 text-right">
               <div className="justify-start items-start">
-                <div className="text-center font-poppins mr-0 rounded-t-lg bg-opacity-10 block px-4 md:mr-1 py-5">
+                <div className="text-center font-poppins mr-0 rounded-t-lg bg-opacity-10 block px-4 md:mr-1 py-5 relative">
                   <span
                     className="text-base text-[#CCA8B4] hover:text-opacity-80 cursor-pointer"
                     onClick={() => setNfts(mintedNFTs)}
@@ -101,15 +101,15 @@ const collection = () => {
                   >
                     My NFTs
                   </span>
+                  <button
+                    className="bg-eversnipe hover:bg-eversnipe-hover transition-colors duration-100 py-2 px-4 text-eversnipe-dark font-extrabold text-md rounded-lg absolute right-0"
+                    onClick={() => {
+                      setMintModal(true);
+                    }}
+                  >
+                    Mint NFT
+                  </button>
                 </div>
-                <button
-                  className=""
-                  onClick={() => {
-                    setMintModal(true);
-                  }}
-                >
-                  Mint NFT
-                </button>
               </div>
               <div className="w-full border-b-2 border-eversnipe mb-2"></div>
               <div className="grid gap-8 text-neutral-600 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">

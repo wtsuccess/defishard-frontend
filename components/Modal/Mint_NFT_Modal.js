@@ -18,7 +18,6 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
     const totalSupply = Number(
       await viewMethod(collection.id, "nft_total_supply")
     );
-    console.log("totalSupply", totalSupply);
     const token_id = (totalSupply + 1).toString();
     const transactions = [];
     transactions.push({
