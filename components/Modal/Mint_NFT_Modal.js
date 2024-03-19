@@ -5,8 +5,10 @@ import { formatNearAmount } from "near-api-js/lib/utils/format";
 import closeIcon from "../../svgs/close.svg";
 import { base_uri } from "../../config/constant";
 import { viewMethod } from "../../config/utils";
+import { useRouter } from "next/router";
 
 const Mint_NFT_Modal = ({ collection, onClose }) => {
+  const router = useRouter();
   const { walletSelectorObject, accountId, signInModal } =
     useContext(UserContext);
 
@@ -15,30 +17,28 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
   }
 
   const mint = async () => {
-    const totalSupply = Number(
-      await viewMethod(collection.id, "nft_total_supply")
-    );
-    const token_id = (totalSupply + 1).toString();
+    const index = Number(await viewMethod(collection.id, "index"));
+    const token_id = (index + 1).toString();
     const transactions = [];
-    transactions.push({
-      receiverId: collection.id,
-      signerId: accountId,
-      actions: [
-        {
-          type: "FunctionCall",
-          params: {
-            methodName: "storage_deposit",
-            args: {
-              account_id: accountId,
-            },
-            gas: "100000000000000",
-            deposit: parseNearAmount("0.01"),
-          },
-        },
-      ],
-    });
 
     if (collection.currency) {
+      transactions.push({
+        receiverId: collection.id,
+        signerId: accountId,
+        actions: [
+          {
+            type: "FunctionCall",
+            params: {
+              methodName: "storage_deposit",
+              args: {
+                account_id: accountId,
+              },
+              gas: "100000000000000",
+              deposit: parseNearAmount("0.01"),
+            },
+          },
+        ],
+      });
       transactions.push({
         receiverId: collection.currency,
         signerId: accountId,
@@ -56,7 +56,6 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
           },
         ],
       });
-
       transactions.push({
         receiverId: collection.currency,
         signerId: accountId,
@@ -67,11 +66,7 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
               methodName: "ft_transfer_call",
               args: {
                 receiver_id: collection.id,
-                amount: (
-                  (Number(collection.price) *
-                    Number(collection.payment_split_percent)) /
-                  100
-                ).toString(),
+                amount: Number(collection.price).toString(),
                 msg: "",
               },
               gas: "100000000000000",
@@ -99,11 +94,11 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
                 media: `${token_id}.png`,
               },
             },
-            gas: "200000000000000",
+            gas: "300000000000000",
             deposit: collection.currency
-              ? parseNearAmount("1.6")
+              ? parseNearAmount("2")
               : parseNearAmount(
-                  (Number(formatNearAmount(collection.price)) + 1.6).toString()
+                  (Number(formatNearAmount(collection.price)) + 2).toString()
                 ),
           },
         },
@@ -115,7 +110,6 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
         transactions,
       });
       await mintTx.wait();
-      console.log("mintTx", mintTx.hash);
       alert(mintTx);
     } catch (err) {
       console.error("error", err);
@@ -138,13 +132,6 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
             </div>
             <div className="block my-2">
               <img src={base_uri + "0.png"} alt="media" />
-              <p className="font-bold text-lg text-white my-2">
-                {/* # {data.token_id} */}
-              </p>
-              <p className="text-gray-600 text-sm">
-                {/* Defishard NFT #{prettyTruncate(data.token_id, 200)} */}
-              </p>
-
               <p className="text-lg text-white my-4">
                 Mint Price &nbsp;
                 <span className="font-bold">
@@ -164,6 +151,18 @@ const Mint_NFT_Modal = ({ collection, onClose }) => {
                 </p>
               </button>
             </div>
+            {router.query.transactionHashes && (
+              <div>
+                Successfully Minted New NFT
+                <br />
+                <a
+                  href={`https://testnet.nearblocks.io/txns/${router.query.transactionHashes}`}
+                  target="_blank"
+                >
+                  View on Nearscan
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

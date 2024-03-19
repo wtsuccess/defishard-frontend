@@ -13,6 +13,7 @@ import Burn_NFT_Modal from "../../components/Modal/Burn_NFT_Modal";
 
 const collection = () => {
   const router = useRouter();
+  console.log(router.query.transactionHashes);
   const collection_id = router.query.id;
 
   const { accountId } = useContext(UserContext);
@@ -60,7 +61,6 @@ const collection = () => {
   useEffect(() => {
     (async () => {
       const mintedNFTs = await viewMethod(collection_id, "nft_tokens");
-      console.log("mintedNFTs", mintedNFTs);
       setMintedNFTs(mintedNFTs);
       const myNFTs = mintedNFTs.filter((nft) => {
         return nft.owner_id === accountId;
@@ -83,6 +83,10 @@ const collection = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
+        <div>
+          {collection.name}({collection.symbol}) {collection.totalSupply} /{" "}
+          {mintedNFTs.length}
+        </div>
         <div className="flex flex-row gap-x-2 mx-auto w-4/5">
           <div data-aos="zoom-in" className="container w-full">
             <div className="w-full px-0 md:px-4 mt-20 md:mt-0 text-right">
@@ -159,6 +163,19 @@ const collection = () => {
             setBurnModal(false);
           }}
         />
+      )}
+
+      {router.query.transactionHashes && (
+        <div>
+          Successfully Minted New NFT
+          <br />
+          <a
+            href={`https://testnet.nearblocks.io/txns/${router.query.transactionHashes}`}
+            target="_blank"
+          >
+            View on Nearscan
+          </a>
+        </div>
       )}
     </>
   );

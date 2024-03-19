@@ -37,6 +37,7 @@ const collections = () => {
                 base_uri
                 currency
                 payment_split_percent
+                totalSupply
                 creator {id}
               }
             }
@@ -45,6 +46,7 @@ const collections = () => {
       )
       .then((res) => {
         const totalCollections = res.data.data.collections;
+        console.log(totalCollections);
         setTotalCollections(totalCollections);
         const myCollections = totalCollections.filter((collection) => {
           return collection.creator.id === accountId;
@@ -106,6 +108,9 @@ const collections = () => {
                       <div className="font-bold text-gray-300 text-xl mb-2">
                         {collection.name}({collection.symbol})
                       </div>
+                      <p className="text-gray-600 text-sm">
+                        {collection.totalSupply}
+                      </p>
                       <p className="text-gray-600 text-sm">
                         {collection.payment_split_percent} %
                       </p>

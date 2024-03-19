@@ -6,6 +6,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import AppNavbar from "pagesComponents/AppNavbar";
 import { parseNearAmount } from "near-api-js/lib/utils/format";
+import TransactionModal from "../../components/Modal/TransactionModal";
 
 const addCollection = () => {
   const router = useRouter();
@@ -16,6 +17,7 @@ const addCollection = () => {
   const [mintPrice, setMintPrice] = useState(0);
   const [mintCurrency, setMintCurrency] = useState();
   const [royaltyFee, setRoyaltyFee] = useState(0);
+  const [totalSupply, setTotalSupply] = useState(0);
 
   const { walletSelectorObject, accountId, signInModal } =
     useContext(UserContext);
@@ -52,13 +54,14 @@ const addCollection = () => {
                   symbol: symbol,
                   base_uri: baseURI,
                 },
+                total_supply: totalSupply.toString(),
                 mint_price: mintCurrency
                   ? (mintPrice * 1000000).toString()
                   : parseNearAmount(mintPrice.toString()),
                 mint_currency: mintCurrency ? mintCurrency : undefined,
                 payment_split_percent: royaltyFee.toString(),
               },
-              gas: "300000000000000",
+              gas: "100000000000000",
               deposit: parseNearAmount("7"),
             },
           },
@@ -162,8 +165,19 @@ const addCollection = () => {
                 className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 <option value="">Near</option>
-                <option value="usdc.fakes.testnet">USDT</option>
+                <option value="usdc.fakes.testnet">USDC</option>
               </select>
+            </div>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
+                Total Supply
+              </label>
+              <input
+                className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="50"
+                value={totalSupply}
+                onChange={(e) => setTotalSupply(e.target.value)}
+              />
             </div>
           </div>
 
@@ -173,6 +187,18 @@ const addCollection = () => {
           >
             Create Collection
           </button>
+          {router.query.transactionHashes && (
+            <div>
+              Successfully Created New Collection
+              <br />
+              <a
+                href={`https://testnet.nearblocks.io/txns/${router.query.transactionHashes}`}
+                target="_blank"
+              >
+                View on Nearscan
+              </a>
+            </div>
+          )}
         </div>
       </section>
     </>

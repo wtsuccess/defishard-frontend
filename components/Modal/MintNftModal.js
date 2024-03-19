@@ -64,8 +64,13 @@ const MintNftModal = ({ isShow, onClose }) => {
       <div className="flex min-h-full items-center justify-center p-4 text-center w-full md:w-1/3 mx-auto">
         <div className="w-full h-full relative transform overflow-auto rounded-lg bg-eversnipe-bg border-2 border-eversnipe-dark">
           <div className="relative p-4 w-full">
-            <p className="font-bold text-lg mt-2 mb-8">Create New Vault with Asset</p>
-            <div className="absolute right-6 top-4 p-1 cursor-pointer" onClick={onClose}>
+            <p className="font-bold text-lg mt-2 mb-8">
+              Create New Vault with Asset
+            </p>
+            <div
+              className="absolute right-6 top-4 p-1 cursor-pointer"
+              onClick={onClose}
+            >
               <img src={closeIcon} width={30} height={30} />
             </div>
 
@@ -136,7 +141,7 @@ const MintNftModal = ({ isShow, onClose }) => {
             </div>
 
             <div className="inline-flex gap-x-4 bg-eversnipe-bg mx-auto mt-10">
-                           <button className="font-poppins mr-0 md:mr-4" onClick={mintNft}>
+              <button className="font-poppins mr-0 md:mr-4" onClick={mintNft}>
                 <p
                   className={`
                   ${nearAmount <= 0 ? "cursor-not-allowed" : "cursor-pointer"}
