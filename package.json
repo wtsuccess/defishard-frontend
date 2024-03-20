@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "SET NODE_OPTIONS=--openssl-legacy-provider && next dev",
-    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && next build",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider next build",
     "start": "SET NODE_OPTIONS=--openssl-legacy-provider && next start",
     "export": "next export",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm run build:tailwind && npm run dev",
