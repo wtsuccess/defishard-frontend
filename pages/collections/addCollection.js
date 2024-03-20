@@ -6,16 +6,15 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import AppNavbar from "pagesComponents/AppNavbar";
 import { parseNearAmount } from "near-api-js/lib/utils/format";
-import TransactionModal from "../../components/Modal/TransactionModal";
 
 const addCollection = () => {
   const router = useRouter();
 
-  const [baseURI, setBaseURI] = useState();
+  const [baseURI, setBaseURI] = useState("");
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
   const [mintPrice, setMintPrice] = useState(0);
-  const [mintCurrency, setMintCurrency] = useState();
+  const [mintCurrency, setMintCurrency] = useState("");
   const [royaltyFee, setRoyaltyFee] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
 
@@ -34,7 +33,7 @@ const addCollection = () => {
     }
 
     if (!name || !symbol || !mintPrice || !royaltyFee || !baseURI) {
-      alert("Input all the infos about collection");
+      alert("Please input all the collection information");
       return;
     }
 
@@ -78,130 +77,120 @@ const addCollection = () => {
     <>
       <Header title="Defishard | Launchpad" />
       <AppNavbar title={router.asPath} />
-      <section
-        className="header items-start bg-fill min-h-screen overflow-y-auto py-10"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(9, 10, 14) 0%, rgba(20,20,32,1) 100%)",
-          backgroundSize: "100% 100%",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="flex flex-row gap-x-2 mx-auto w-4/5">
-          <div data-aos="zoom-in" className="container w-full">
-            <div className="w-full px-0 md:px-4 mt-20 md:mt-0 text-center">
-              <div className="grid grid-cols-1 justify-start items-start">
-                <p className="text-base font-bold text-[#CCA8B4] hover:text-opacity-80 border-b-2 border-white">
-                  Create Collection
-                </p>
+      <section className="min-h-screen bg-gradient-to-b from-purple-900 to-blue-700 py-10">
+        <div className="container mx-auto px-4">
+          <div className="max-w-lg mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
+              Create Collection
+            </h2>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Collection Name
+                </label>
+                <input
+                  className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
+                  placeholder="Enter collection name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Collection Symbol
+                </label>
+                <input
+                  className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
+                  placeholder="Enter collection symbol"
+                  value={symbol}
+                  onChange={(e) => setSymbol(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Base Uri
+                </label>
+                <input
+                  className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
+                  placeholder="Enter base URI"
+                  value={baseURI}
+                  onChange={(e) => setBaseURI(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Payment Split Percent(%)
+                </label>
+                <input
+                  type="number"
+                  className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
+                  placeholder="Enter payment split percent"
+                  value={royaltyFee}
+                  onChange={(e) => setRoyaltyFee(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Mint Price
+                </label>
+                <input
+                  type="number"
+                  className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
+                  placeholder="Enter mint price"
+                  value={mintPrice}
+                  onChange={(e) => setMintPrice(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Mint Currency
+                </label>
+                <select
+                  className="form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
+                  value={mintCurrency}
+                  onChange={(e) => setMintCurrency(e.target.value)}
+                >
+                  <option value="">Near</option>
+                  <option value="usdc.fakes.testnet">USDC</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Total Supply
+                </label>
+                <input
+                  type="number"
+                  className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"
+                  placeholder="Enter total supply"
+                  value={totalSupply}
+                  onChange={(e) => setTotalSupply(e.target.value)}
+                />
               </div>
             </div>
+            <button
+              className="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded focus:outline-none focus:shadow-outline"
+              onClick={launchNewCollection}
+            >
+              Create Collection
+            </button>
+            {router.query.transactionHashes && (
+              <div className="mt-4 text-center text-gray-700">
+                Successfully Created New Collection
+                <br />
+                <a
+                  href={`https://testnet.nearblocks.io/txns/${router.query.transactionHashes}`}
+                  target="_blank"
+                  className="text-blue-500 hover:underline"
+                >
+                  View on Nearscan
+                </a>
+              </div>
+            )}
           </div>
-        </div>
-        <div className="my-auto h-full grid grid-cols-1 mx-auto w-2/3 py-5">
-          <div className="grid gap-6 mb-6 md:grid-cols-2">
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Collection Name
-              </label>
-              <input
-                className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="DeFishard"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Collection Symbol
-              </label>
-              <input
-                className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="DeFishard"
-                value={symbol}
-                onChange={(e) => setSymbol(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Base Uri
-              </label>
-              <input
-                className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="https://ipfs.io/ipfs/QmYDvPAXtiJg7s8JdRBSLWdgSphQdac8j1YuQNNxcGE1hg/"
-                value={baseURI}
-                onChange={(e) => setBaseURI(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Payment Split Percent(%)
-              </label>
-              <input
-                className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="50"
-                value={royaltyFee}
-                onChange={(e) => setRoyaltyFee(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Mint Price
-              </label>
-              <input
-                className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="50"
-                value={mintPrice}
-                onChange={(e) => setMintPrice(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Mint Currency
-              </label>
-              <select
-                value={mintCurrency}
-                onChange={(e) => setMintCurrency(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                <option value="">Near</option>
-                <option value="usdc.fakes.testnet">USDC</option>
-              </select>
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-400 dark:text-white">
-                Total Supply
-              </label>
-              <input
-                className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="50"
-                value={totalSupply}
-                onChange={(e) => setTotalSupply(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <button
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            onClick={launchNewCollection}
-          >
-            Create Collection
-          </button>
-          {router.query.transactionHashes && (
-            <div>
-              Successfully Created New Collection
-              <br />
-              <a
-                href={`https://testnet.nearblocks.io/txns/${router.query.transactionHashes}`}
-                target="_blank"
-              >
-                View on Nearscan
-              </a>
-            </div>
-          )}
         </div>
       </section>
     </>
   );
 };
+
 export default addCollection;

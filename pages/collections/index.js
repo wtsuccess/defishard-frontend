@@ -60,63 +60,48 @@ const collections = () => {
     <>
       <Header title="Defishard | Dashboard" />
       <AppNavbar title={router.asPath} />
-      <section
-        className="flex header items-start bg-fill min-h-screen overflow-y-auto h-auto"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(9, 10, 14) 0%, rgba(20,20,32,1) 100%)",
-          backgroundSize: "100% 100%",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="flex flex-row gap-x-2 mx-auto w-4/5">
-          <div data-aos="zoom-in" className="container w-full">
-            <div className="w-full px-0 md:px-4 mt-20 md:mt-0 text-right">
-              <div className="justify-start items-start">
-                <div className="text-center font-poppins mr-0 rounded-t-lg bg-opacity-10 block px-4 md:mr-1 py-5">
-                  <span
-                    className="text-base text-[#CCA8B4] hover:text-opacity-80 cursor-pointer"
+      <section className="min-h-screen bg-gradient-to-b from-purple-500 to-blue-700 py-10">
+        <div className="container mx-auto py-12">
+            <div className="flex justify-center mb-6 items-center">
+                <button
+              className="text-white px-6 py-3 rounded-full bg-gray-700 hover:bg-gray-800 transition duration-300"
                     onClick={() => setCollections(totalCollections)}
                   >
                     Total Collection
-                  </span>
-                  <span>&nbsp;/&nbsp;</span>
-                  <span
-                    className="text-base text-[#CCA8B4] hover:text-opacity-80 cursor-pointer"
+                  </button>
+                  <div className="mx-2 text-white">---</div>
+                  <button
+                    className="text-white px-6 py-3 rounded-full bg-gray-700 hover:bg-gray-800 transition duration-300"
                     onClick={() => setCollections(myCollections)}
                   >
                     My Collection
-                  </span>
-                </div>
+                  </button>
               </div>
-              <div className="w-full border-b-2 border-eversnipe mb-2"></div>
-              <div className="grid gap-8 text-neutral-600 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {collections.map((collection) => (
                   <div
-                    className="rounded text-center overflow-hidden cursor-pointer shadow-lg shadow-[#ffffff1b] hover:shadow-[#ffffff3a]"
+                    className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 cursor-pointer"
                     key={collection.id}
-                    onClick={() => {
-                      router.push(`/collections/${collection.id}`);
-                    }}
+                    onClick={() => router.push(`/collections/${collection.id}`)}
                   >
                     <img
-                      src={collection.base_uri + "0.png"}
+                      src={`${collection.base_uri}0.png`}
                       alt="media"
-                      className="w-full"
+                      className="w-full h-64 object-cover"
                     />
-                    <div className="px-6 py-4">
-                      <div className="font-bold text-gray-300 text-xl mb-2">
-                        {collection.name}({collection.symbol})
+                    <div className="p-6">
+                      <div className="text-white font-semibold text-xl mb-2 flex justify-center">
+                        {collection.name} ({collection.symbol})
                       </div>
-                      <p className="text-gray-600 text-sm">
-                        {collection.totalSupply}
+                      <p className="text-gray-400 text-sm flex justify-center">
+                        Total Supply &nbsp; {collection.totalSupply}
                       </p>
-                      <p className="text-gray-600 text-sm">
-                        {collection.payment_split_percent} %
+                      <p className="text-gray-400 text-sm flex justify-center">
+                        Payment Split: {collection.payment_split_percent}%
                       </p>
                     </div>
-                    <div className="px-6 pt-4 pb-2">
-                      <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                    <div className="px-6 py-4 bg-gray-700">
+                      <span className="bg-gray-900 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 flex justify-center">
                         {collection.currency
                           ? collection.price / 1000000
                           : formatNearAmount(collection.price)}
@@ -128,9 +113,7 @@ const collections = () => {
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+                </section>
     </>
   );
 };
