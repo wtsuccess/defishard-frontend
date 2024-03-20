@@ -28,9 +28,7 @@ export default function IndexNavbar() {
     if (!walletSelector.isSignedIn()) {
       return;
     }
-
     await walletSelectorObject.signOut();
-    router.replace(process.env.NEXT_PUBLIC_BASE_URL);
   };
 
   return (
@@ -55,11 +53,19 @@ export default function IndexNavbar() {
         <NavbarCollapse open={openNavbar}>
           <Nav>
             <NavLink ripple="dark">
-              {walletSelector.isSignedIn() && (
+              {walletSelector.isSignedIn() ? (
                 <Link href="/">
                   <div className="mr-0 md:mr-4" onClick={_signOut}>
                     <p className="font-poppins font-bold text-[#CCA8B4] text-lg cursor-pointer hover:text-opacity-80">
                       LOGOUT
+                    </p>
+                  </div>
+                </Link>
+              ) : (
+                <Link href="/">
+                  <div className="mr-0 md:mr-4" onClick={_signIn}>
+                    <p className="font-poppins font-bold text-[#CCA8B4] text-lg cursor-pointer hover:text-opacity-80">
+                      LOGIN
                     </p>
                   </div>
                 </Link>

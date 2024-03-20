@@ -2,17 +2,13 @@ import React from "react";
 import Head from "next/head";
 import "material-icons/css/material-icons.min.css";
 import "assets/styles/index.css";
-import * as nearAPI from "near-api-js";
-import getConfig from "../config/near";
 import UserContext from "../config/context";
 import { useEffect, useState } from "react";
 import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import "@near-wallet-selector/modal-ui/styles.css";
 import MyNearIconUrl from "@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png";
-import { urlBase64ToUint8Array } from "../utils/common";
 import useOneSignal from "../utils/useOneSignal";
 import Loading from "../components/Loading";
 import { viewMethod } from "../config/utils";
@@ -51,10 +47,12 @@ export default function MyApp({ Component, pageProps }) {
         setupLedger({ iconUrl: ledgerIconUrl }),
       ],
     });
-    const modal = setupModal(selector, {
-      contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ID,
-      description: "Please connect your wallet",
-    });
+    const modal = setupModal(selector, {});
+
+    // const modal = setupModal(selector, {
+    //   contractId: process.env.NEXT_PUBLIC_NFT_CONTRACT_ID,
+    //   description: "Please connect your wallet",
+    // });
 
     const isSignedIn = selector.isSignedIn();
 

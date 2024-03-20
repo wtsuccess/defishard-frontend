@@ -12,7 +12,7 @@ const ModalEnum = {
   singleAsset: "single_asset",
 };
 
-const Marketplace = () => {
+const marketplace = () => {
   const router = useRouter();
   const { walletSelector, accountId, nftMetadata } = useContext(UserContext);
 
@@ -20,7 +20,7 @@ const Marketplace = () => {
   const [listedNft, setListedNft] = useState([]);
   const [nftById, setNftById] = useState([]);
   const [getNft, setGetNft] = useState([]);
-  const [tab, setTab] = useState("");
+  const [tab, setTab] = useState("single");
   const [showModal, setShowModal] = useState(null);
   const [selectedSingleAsset, setSelectedSingleAsset] = useState(null);
 
@@ -92,6 +92,14 @@ const Marketplace = () => {
     setNftById(nfts);
   };
 
+  const fetchCollections = async () => {
+    const getCollectionsByArtist = await viewMethod(
+      process.env.NEXT_PUBLIC_LAUNCHPAD_CONTRACT_ID,
+      "collections_for_artist",
+      { account_id: process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ID }
+    );
+  };
+
   return (
     <>
       <Header title="Defishard | Marketplace" />
@@ -143,15 +151,18 @@ const Marketplace = () => {
                   </p>
                 </div>
                 <div
+                  onClick={() => {
+                    setTab("standard");
+                  }}
                   className={`${
                     tab === "standard" && "bg-eversnipe-hover bg-opacity-10"
                   } 
-                 cursor-not-allowed font-poppins mr-0 rounded-t-lg hover:bg-eversnipe-hover hover:bg-opacity-20 block p-4 md:mr-1`}
+                 font-poppins mr-0 rounded-t-lg hover:bg-eversnipe-hover hover:bg-opacity-20 block p-4 md:mr-1`}
                 >
                   <p
                     className={`${
                       tab === "standard" && "font-bold underline"
-                    } text-base text-[#CCA8B4] hover:text-opacity-80`}
+                    } text-base text-[#CCA8B4] hover:text-opacity-80 cursor-pointer`}
                   >
                     NFT Collections
                   </p>
@@ -161,37 +172,39 @@ const Marketplace = () => {
               <div className="w-full border-b-2 border-eversnipe mb-2"></div>
 
               <div className="grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-                {getNft.map((nft) => (
-                  <div
-                    className="rounded overflow-hidden cursor-pointer shadow-lg shadow-[#ffffff1b] hover:shadow-[#ffffff3a]"
-                    onClick={() => {
-                      setShowModal(ModalEnum.singleAsset);
-                      setSelectedSingleAsset(nft);
-                    }}
-                  >
-                    <img
-                      className="w-full"
-                      src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
-                      alt="media"
-                    />
-                    <div className="px-6 py-4">
-                      <div className="font-bold text-gray-300 text-xl mb-2">
-                        # {nft.token_id}
+                {tab === "single" &&
+                  getNft.map((nft) => (
+                    <div
+                      className="rounded overflow-hidden cursor-pointer shadow-lg shadow-[#ffffff1b] hover:shadow-[#ffffff3a]"
+                      onClick={() => {
+                        setShowModal(ModalEnum.singleAsset);
+                        setSelectedSingleAsset(nft);
+                      }}
+                    >
+                      <img
+                        className="w-full"
+                        src={`${nftMetadata.base_uri}/${nft.metadata?.media}`}
+                        alt="media"
+                      />
+                      <div className="px-6 py-4">
+                        <div className="font-bold text-gray-300 text-xl mb-2">
+                          # {nft.token_id}
+                        </div>
+                        <p className="text-gray-600 text-sm">
+                          Defishard NFT #{prettyTruncate(nft.token_id, 200)}
+                        </p>
                       </div>
-                      <p className="text-gray-600 text-sm">
-                        Defishard NFT #{prettyTruncate(nft.token_id, 200)}
-                      </p>
+                      <div className="px-6 pt-4 pb-2">
+                        <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                          {formatNearAmount(nft.sale_conditions?.near)} Ⓝ
+                        </span>
+                      </div>
+                      <div className="px-6 pt-4 pb-2">
+                        <p>{nft.owner_id}</p>
+                      </div>
                     </div>
-                    <div className="px-6 pt-4 pb-2">
-                      <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                        {formatNearAmount(nft.sale_conditions?.near)} Ⓝ
-                      </span>
-                    </div>
-                    <div className="px-6 pt-4 pb-2">
-                      <p>{nft.owner_id}</p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                {tab === "standard" && <></>}
               </div>
             </div>
           </div>
@@ -212,4 +225,4 @@ const Marketplace = () => {
   );
 };
 
-export default Marketplace;
+export default marketplace;

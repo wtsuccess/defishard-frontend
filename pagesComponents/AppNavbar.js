@@ -16,7 +16,8 @@ const TitleEnum = {
   SingleAsset: "/single-asset",
   Marketplace: "/marketplace",
   TokenBasket: "/basket",
-  NFTLaunchpad: "/launchpad",
+  Launchpad: "/launchpad",
+  MyNFTs: "/mynft",
 };
 
 const AppNavbar = ({ title }) => {
@@ -57,8 +58,13 @@ const AppNavbar = ({ title }) => {
           <Nav>
             <NavLink ripple="dark">
               <Link href="/single-asset" replace={true}>
-                <div className={`${title.includes(TitleEnum.SingleAsset) && "bg-eversnipe-hover bg-opacity-10"} 
-                 font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}>
+                <div
+                  className={`${
+                    title.includes(TitleEnum.SingleAsset) &&
+                    "bg-eversnipe-hover bg-opacity-10"
+                  } 
+                 font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}
+                >
                   <p
                     className={`${
                       title === TitleEnum.SingleAsset && "font-bold underline"
@@ -69,8 +75,13 @@ const AppNavbar = ({ title }) => {
                 </div>
               </Link>
               <Link href="/marketplace" replace={true}>
-                <div className={`${title === TitleEnum.Marketplace && "bg-eversnipe-hover bg-opacity-10"} 
-                 font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}>
+                <div
+                  className={`${
+                    title === TitleEnum.Marketplace &&
+                    "bg-eversnipe-hover bg-opacity-10"
+                  } 
+                 font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}
+                >
                   <p
                     className={`${
                       title === TitleEnum.Marketplace && "font-bold underline"
@@ -81,8 +92,13 @@ const AppNavbar = ({ title }) => {
                 </div>
               </Link>
               <Link href="/basket" replace={true}>
-                <div className={`${title === TitleEnum.TokenBasket && "bg-eversnipe-hover bg-opacity-10"} 
-                font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}>
+                <div
+                  className={`${
+                    title === TitleEnum.TokenBasket &&
+                    "bg-eversnipe-hover bg-opacity-10"
+                  } 
+                font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}
+                >
                   <p
                     className={`${
                       title === TitleEnum.TokenBasket && "font-bold underline"
@@ -93,14 +109,36 @@ const AppNavbar = ({ title }) => {
                 </div>
               </Link>
               <Link href="/launchpad" replace={true}>
-                <div className={`${title === TitleEnum.NFTLaunchpad && "bg-eversnipe-hover bg-opacity-10"} 
-                 font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}>
+                <div
+                  className={`${
+                    title === TitleEnum.Launchpad &&
+                    "bg-eversnipe-hover bg-opacity-10 "
+                  } 
+                 font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}
+                >
                   <p
                     className={`${
-                      title === TitleEnum.NFTLaunchpad && "font-bold underline"
+                      title === TitleEnum.Launchpad && "font-bold underline"
                     } text-base text-[#CCA8B4] hover:text-opacity-80`}
                   >
-                    NFT Launchpad
+                    Launchpad
+                  </p>
+                </div>
+              </Link>
+              <Link href="/collections" replace={true}>
+                <div
+                  className={`${
+                    title === TitleEnum.Launchpad &&
+                    "bg-eversnipe-hover bg-opacity-10"
+                  } 
+                 font-poppins mr-0 hover:bg-eversnipe-hover hover:bg-opacity-20 rounded-lg block p-4 md:mr-2 cursor-pointer`}
+                >
+                  <p
+                    className={`${
+                      title === TitleEnum.Launchpad && "font-bold underline"
+                    } text-base text-[#CCA8B4] hover:text-opacity-80`}
+                  >
+                    Collection
                   </p>
                 </div>
               </Link>

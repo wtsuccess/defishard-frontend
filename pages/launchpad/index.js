@@ -1,12 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import Header from "components/Documentation/Header";
-import UserContext from "../config/context";
 import { useRouter } from "next/router";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import AppNavbar from "pagesComponents/AppNavbar";
 
-const Launchpad = () => {
+const launchpad = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -47,7 +46,6 @@ const Launchpad = () => {
                       <p className="text-lg font-bold text-[#CCA8B4] hover:text-opacity-80 my-6 underline">
                         Ongoing Mints
                       </p>
-                      {/* Loop here */}
                       <div className="flex flex-col items-center justify-center">
                         <p className="text-base text-[#CCA8B4] hover:text-opacity-80">
                           Shardqueen NFT
@@ -71,7 +69,10 @@ const Launchpad = () => {
                     <p className="text-base text-[#CCA8B4] hover:text-opacity-80">
                       For Artists
                     </p>
-                    <button className="mb-4 bg-eversnipe hover:bg-eversnipe-hover transition-colors duration-100 py-2 px-4 text-eversnipe-dark font-extrabold text-md rounded-lg">
+                    <button
+                      className="mb-4 bg-eversnipe hover:bg-eversnipe-hover transition-colors duration-100 py-2 px-4 text-eversnipe-dark font-extrabold text-md rounded-lg"
+                      onClick={() => router.push("/collections/addCollection")}
+                    >
                       <p>Launch a New Collection</p>
                     </button>
                   </div>
@@ -126,4 +127,4 @@ const Launchpad = () => {
   );
 };
 
-export default Launchpad;
+export default launchpad;

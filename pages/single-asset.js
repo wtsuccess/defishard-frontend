@@ -37,9 +37,9 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    // if (!walletSelector.isSignedIn()) {
-    //   router.replace("/");
-    // }
+    if (!walletSelector.isSignedIn()) {
+      router.replace("/");
+    }
 
     getOwnedNft();
   }, [walletSelector]);
