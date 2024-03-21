@@ -50,7 +50,7 @@
     "material-icons": "^0.6.4",
     "material-ripple-effects": "^2.0.1",
     "near-api-js": "^0.44.2",
-    "next": "^10.2.3",
+    "next": "^14.1.4",
     "next-images": "^1.7.0",
     "npm": "^7.14.0",
     "path": "^0.12.7",

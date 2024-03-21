@@ -32,7 +32,9 @@ const AppNavbar = ({ title }) => {
     }
 
     await walletSelectorObject.signOut();
-    router.replace(process.env.NEXT_PUBLIC_BASE_URL);
+    if (router) {
+      router.replace(process.env.NEXT_PUBLIC_BASE_URL);
+    }
   };
 
   return (

@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import Head from "next/head";
 import "material-icons/css/material-icons.min.css";
@@ -8,19 +9,19 @@ import { setupWalletSelector } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import "@near-wallet-selector/modal-ui/styles.css";
-import MyNearIconUrl from "@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png";
+// import MyNearIconUrl from "@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png";
 import useOneSignal from "../utils/useOneSignal";
 import Loading from "../components/Loading";
 import { viewMethod } from "../config/utils";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
-import meteorIconUrl from "@near-wallet-selector/meteor-wallet/assets/meteor-icon.png";
+// import meteorIconUrl from "@near-wallet-selector/meteor-wallet/assets/meteor-icon.png";
 import { setupHereWallet } from "@near-wallet-selector/here-wallet";
-import HereWalletIconUrl from "@near-wallet-selector/here-wallet/assets/here-wallet-icon.png";
+// import HereWalletIconUrl from "@near-wallet-selector/here-wallet/assets/here-wallet-icon.png";
 import { setupMintbaseWallet } from "@near-wallet-selector/mintbase-wallet";
 import { setupSender } from "@near-wallet-selector/sender";
-import senderIconUrl from "@near-wallet-selector/sender/assets/sender-icon.png";
+// import senderIconUrl from "@near-wallet-selector/sender/assets/sender-icon.png";
 import { setupLedger } from "@near-wallet-selector/ledger";
-import ledgerIconUrl from "@near-wallet-selector/ledger/assets/ledger-icon.png";
+// import ledgerIconUrl from "@near-wallet-selector/ledger/assets/ledger-icon.png";
 
 export default function MyApp({ Component, pageProps }) {
   const [walletSelector, setWalletSelector] = useState({});
@@ -34,17 +35,17 @@ export default function MyApp({ Component, pageProps }) {
     const selector = await setupWalletSelector({
       network: process.env.NEXT_PUBLIC_APP_ENV,
       modules: [
-        setupMyNearWallet({ iconUrl: MyNearIconUrl }),
-        setupMeteorWallet({ iconUrl: meteorIconUrl }),
-        setupHereWallet({ iconUrl: HereWalletIconUrl }),
+        setupMyNearWallet(),
+        setupMeteorWallet(),
+        setupHereWallet(),
         setupMintbaseWallet({
           networkId: process.env.NEXT_PUBLIC_APP_ENV,
           walletUrl: "https://wallet.mintbase.xyz",
           callbackUrl: "https://www.mywebsite.com",
           deprecated: false,
         }),
-        setupSender({ iconUrl: senderIconUrl }),
-        setupLedger({ iconUrl: ledgerIconUrl }),
+        setupSender(),
+        setupLedger(),
       ],
     });
     const modal = setupModal(selector, {});
